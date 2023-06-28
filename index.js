@@ -1,5 +1,8 @@
 const core = require('@actions/core');
-const aws = require('aws-sdk');
+const aws = require('aws-sdk'),
+      {
+        STS
+      } = require("@aws-sdk/client-sts");
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
@@ -128,7 +131,7 @@ async function assumeRole(params) {
 function sanitizeGithubActor(actor) {
   // In some circumstances the actor may contain square brackets. For example, if they're a bot ('[bot]')
   // Square brackets are not allowed in AWS session tags
-  return actor.replace(/\[|\]/g, SANITIZATION_CHARACTER)
+  return actor.replace(/\[|\]/g, SANITIZATION_CHARACTER);
 }
 
 function sanitizeGithubWorkflowName(name) {
@@ -230,7 +233,7 @@ async function validateCredentials(expectedAccessKeyId) {
 }
 
 function getStsClient(region) {
-  return new aws.STS({
+  return new STS({
     region,
     stsRegionalEndpoints: 'regional',
     customUserAgent: USER_AGENT
